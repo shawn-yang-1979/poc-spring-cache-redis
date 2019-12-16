@@ -21,11 +21,11 @@ public class AppRunner implements CommandLineRunner {
 		createScooter("G1", "Basil");
 		createScooter("G2", "Jake");
 
-		this.scooterService.getAllScooters().stream().forEach(dto -> {
+		this.scooterService.getAllScooters("123").stream().forEach(dto -> {
 			log.info(dto.toString());
 		});
 
-		this.scooterService.getAllScooters().stream().forEach(dto -> {
+		this.scooterService.getAllScooters("2334").stream().forEach(dto -> {
 			log.info(dto.toString());
 		});
 	}

@@ -6,6 +6,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ public class ScooterService {
 	@Autowired
 	private ScooterRepository scooterRepository;
 
+	@CacheEvict
 	@Transactional
 	public ScooterDto createScooter(ScooterDto.Detail scooterDetail) {
 		Scooter entity = new Scooter();
@@ -32,9 +34,9 @@ public class ScooterService {
 		return result;
 	}
 
-	@Cacheable("scooters")
+	@Cacheable("scooter")
 	@Transactional
-	public List<ScooterDto> getAllScooters() {
+	public List<ScooterDto> getAllScooters(String inputs) {
 		List<ScooterDto> result = new LinkedList<>();
 		this.scooterRepository.findAll().forEach(entity -> {
 			ScooterDto dto = new ScooterDto();
@@ -53,7 +55,7 @@ public class ScooterService {
 			long time = 3000L;
 			Thread.sleep(time);
 		} catch (InterruptedException e) {
-			throw new IllegalStateException(e);
+			Thread.currentThread().interrupt();
 		}
 	}
 }
