@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class AppRunner implements CommandLineRunner {
     /**
-     * Test
+     * Test 2
      */
     @Autowired
     private ScooterService scooterService;
