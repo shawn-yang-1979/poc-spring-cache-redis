@@ -20,33 +20,79 @@ public class ScooterService {
 	@Autowired
 	private ScooterRepository scooterRepository;
 
-	@CacheEvict
+	@CacheEvict("scooters")
+	@Transactional
+	public ScooterDto updateScooter(String id, ScooterDto.Detail scooterDetail) {
+		Scooter entity = findScooterById(id);
+		entity.setModel(scooterDetail.getModel());
+		entity.setOwner(scooterDetail.getOwner());
+		return map(entity);
+	}
+
+	private Scooter findScooterById(String id) {
+		Scooter entity = this.scooterRepository.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
+		return entity;
+	}
+
+	@CacheEvict("scooters")
 	@Transactional
 	public ScooterDto createScooter(ScooterDto.Detail scooterDetail) {
 		Scooter entity = new Scooter();
 		entity.setModel(scooterDetail.getModel());
 		entity.setOwner(scooterDetail.getOwner());
 		entity = this.scooterRepository.save(entity);
-		ScooterDto result = new ScooterDto();
-		result.setId(entity.getId().toString());
-		result.getDetail().setModel(entity.getModel());
-		result.getDetail().setOwner(entity.getOwner());
-		return result;
+		return map(entity);
 	}
 
 	@Cacheable("scooter")
 	@Transactional
-	public List<ScooterDto> getAllScooters(String inputs) {
+	public ScooterDto getScooterById(String id) {
+		Scooter entity = findScooterById(id);
+		return map(entity);
+	}
+
+	@Cacheable("scooters")
+	@Transactional
+	public List<ScooterDto> getScootersByOwner(String owner) {
 		List<ScooterDto> result = new LinkedList<>();
-		this.scooterRepository.findAll().forEach(entity -> {
-			ScooterDto dto = new ScooterDto();
-			dto.setId(entity.getId().toString());
-			dto.getDetail().setModel(entity.getModel());
-			dto.getDetail().setOwner(entity.getOwner());
+		this.scooterRepository.findByOwner(owner).forEach(entity -> {
+			ScooterDto dto = map(entity);
 			result.add(dto);
 		});
 		simulateSlowService();
 		return result;
+	}
+
+	@Cacheable("scooters")
+	@Transactional
+	public List<ScooterDto> getScootersByModel(String model) {
+		List<ScooterDto> result = new LinkedList<>();
+		this.scooterRepository.findByModel(model).forEach(entity -> {
+			ScooterDto dto = map(entity);
+			result.add(dto);
+		});
+		simulateSlowService();
+		return result;
+	}
+
+	@Cacheable("scooters")
+	@Transactional
+	public List<ScooterDto> getScooters() {
+		List<ScooterDto> result = new LinkedList<>();
+		this.scooterRepository.findAll().forEach(entity -> {
+			ScooterDto dto = map(entity);
+			result.add(dto);
+		});
+		simulateSlowService();
+		return result;
+	}
+
+	private ScooterDto map(Scooter entity) {
+		ScooterDto dto = new ScooterDto();
+		dto.setId(entity.getId().toString());
+		dto.getDetail().setModel(entity.getModel());
+		dto.getDetail().setOwner(entity.getOwner());
+		return dto;
 	}
 
 	// Don't do this at home

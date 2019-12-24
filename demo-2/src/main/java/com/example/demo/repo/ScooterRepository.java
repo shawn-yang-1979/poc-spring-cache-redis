@@ -6,8 +6,4 @@ import com.example.demo.entity.Scooter;
 
 public interface ScooterRepository extends CrudRepository<Scooter, String> {
 
-	Iterable<Scooter> findByModel(String model);
-
-	Iterable<Scooter> findByOwner(String owner);
-
 }
