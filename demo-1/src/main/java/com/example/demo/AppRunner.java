@@ -13,7 +13,7 @@ public class AppRunner implements CommandLineRunner {
      * Test 2
      */
     @Autowired
-    private ScooterService scooterService;
+    private ScooterDao scooterService;
 
     @Override
     public void run(String... args) throws Exception {
@@ -21,7 +21,7 @@ public class AppRunner implements CommandLineRunner {
         this.scooterService.createScooter(ObjectMother.newScooterDetail("G1", "Basil"));
         this.scooterService.createScooter(ObjectMother.newScooterDetail("G2", "Jake"));
         this.scooterService.getScooters().stream().forEach(dto -> log.info(dto.toString()));
-        this.scooterService.getScootersByModel("G1").stream().forEach(dto -> log.info(dto.toString()));
+//        this.scooterService.getScootersByModel("G1").stream().forEach(dto -> log.info(dto.toString()));
     }
 
 }
